@@ -1,8 +1,8 @@
 <template>
   <v-container>
-    <v-row>
-      <v-col cols="6">
-        <h1>Text Replacer</h1>
+    <v-row style="max-width: 30rem">
+      <v-col cols="12">
+        <h1>CSV File</h1>
         <v-file-input id="csv" show-size label="Select CSV file"></v-file-input>
         <div v-for="(regexString, index) in regexStrings" :key="index">
           <h3>Rule {{ index + 1 }}</h3>
@@ -26,9 +26,11 @@
             class="ml-2"
             >Remove Rule</v-btn
           >
-        </div>
-        <div class="my-2">
-          <v-btn :disabled="canReplaceText" @click="replaceText" color="primary"
+          <v-btn
+            class="ml-2"
+            :disabled="canReplaceText"
+            @click="replaceText"
+            color="primary"
             >Replace Text</v-btn
           >
         </div>
