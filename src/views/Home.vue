@@ -16,13 +16,14 @@
           ></v-text-field>
         </div>
         <div class="my-2">
-          <v-btn :disabled="canReplaceText" @click="addRule" color="primary"
+          <v-btn :disabled="canReplaceText" @click="addRule" color="normal"
             >Add Rule</v-btn
           >
           <v-btn
+            text
             :disabled="canReplaceText"
             @click="regexStrings.pop()"
-            color="primary"
+            color="normal"
             class="ml-2"
             >Remove Rule</v-btn
           >
