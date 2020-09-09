@@ -52,7 +52,6 @@ export default {
       { regex: `-[a-zA-Z0-9]{32}`, replace: "" },
       { regex: `-`, replace: " " },
     ],
-    regexs: [],
     canReplaceText: false,
   }),
   methods: {
@@ -67,12 +66,13 @@ export default {
       let reader = new FileReader();
 
       reader.onload = () => {
+        let regexs = [];
         this.regexStrings.forEach((regexString) => {
-          this.regexs.push(new RegExp(regexString.regex, "gim"));
+          regexs.push(new RegExp(regexString.regex, "gim"));
 
           let replacedText = reader.result;
 
-          this.regexs.forEach((regex, index) => {
+          regexs.forEach((regex, index) => {
             replacedText = replacedText.replace(
               regex,
               this.regexStrings[index].replace
