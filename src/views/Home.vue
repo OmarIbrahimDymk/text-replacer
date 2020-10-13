@@ -1,41 +1,60 @@
 <template>
   <v-container>
-    <v-row style="max-width: 30rem">
-      <v-col cols="12">
-        <h1>CSV File</h1>
-        <v-file-input id="csv" show-size label="Select CSV file"></v-file-input>
-        <div v-for="(regexString, index) in regexStrings" :key="index">
-          <h3>Rule {{ index + 1 }}</h3>
-          <v-text-field
-            v-model="regexString.regex"
-            label="Regex"
-          ></v-text-field>
-          <v-text-field
-            v-model="regexString.replace"
-            label="Replace"
-          ></v-text-field>
-        </div>
-        <div class="my-2">
-          <v-btn :disabled="canReplaceText" @click="addRule" color="normal"
-            >Add Rule</v-btn
-          >
-          <v-btn
-            text
-            :disabled="canReplaceText"
-            @click="regexStrings.pop()"
-            color="normal"
-            class="ml-2"
-            >Remove Rule</v-btn
-          >
-          <v-btn
-            class="ml-2"
-            :disabled="canReplaceText"
-            @click="replaceText"
-            color="primary"
-            >Replace Text</v-btn
-          >
+    <v-row>
+      <v-col cols="6">
+        <div style="max-width: 30rem">
+          <h1>CSV File</h1>
+          <v-file-input
+            id="csv"
+            show-size
+            label="Select CSV file"
+          ></v-file-input>
+          <div v-for="(regexString, index) in regexStrings" :key="index">
+            <h3>Rule {{ index + 1 }}</h3>
+            <v-text-field
+              v-model="regexString.regex"
+              label="Regex"
+            ></v-text-field>
+            <v-text-field
+              v-model="regexString.replace"
+              label="Replace"
+            ></v-text-field>
+          </div>
+          <div class="my-2">
+            <v-btn :disabled="canReplaceText" @click="addRule" color="normal"
+              >Add Rule</v-btn
+            >
+            <v-btn
+              text
+              :disabled="canReplaceText"
+              @click="regexStrings.pop()"
+              color="normal"
+              class="ml-2"
+              >Remove Rule</v-btn
+            >
+            <v-btn
+              class="ml-2"
+              :disabled="canReplaceText"
+              @click="replaceText"
+              color="primary"
+              >Replace Text</v-btn
+            >
+            <v-btn
+              class="mt-2"
+              :disabled="replacedText == ''"
+              @click="downloadCSV"
+              color="primary"
+              >Download CSV</v-btn
+            >
+          </div>
         </div>
       </v-col>
+      <v-col cols="6"
+        ><p>{{ replacedText }}</p></v-col
+      >
+    </v-row>
+    <v-row>
+      <v-col></v-col>
     </v-row>
   </v-container>
 </template>
