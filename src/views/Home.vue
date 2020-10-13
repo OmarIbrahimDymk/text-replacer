@@ -73,6 +73,7 @@ export default {
       { regex: `-`, replace: " " },
     ],
     canReplaceText: false,
+    replacedText: "",
   }),
   methods: {
     addRule() {
@@ -90,16 +91,14 @@ export default {
         this.regexStrings.forEach((regexString) => {
           regexs.push(new RegExp(regexString.regex, "gim"));
 
-          let replacedText = reader.result;
+          this.replacedText = reader.result;
 
           regexs.forEach((regex, index) => {
-            replacedText = replacedText.replace(
+            this.replacedText = this.replacedText.replace(
               regex,
               this.regexStrings[index].replace
             );
           });
-
-          this.download("hello.csv", replacedText);
         });
       };
 
@@ -119,6 +118,12 @@ export default {
       element.click();
 
       document.body.removeChild(element);
+    },
+
+    downloadCSV() {
+      let fileInput = document.getElementById("csv");
+      let filename = fileInput.value.replace(".csv", "");
+      this.download(`${fileInput.value}-${Date.now()}.csv`, this.replacedText);
     },
   },
 };
