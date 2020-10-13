@@ -3,12 +3,20 @@
     <v-row>
       <v-col cols="6">
         <div style="max-width: 30rem">
-          <h1>CSV File</h1>
+          <h4>Upload CSV file or enter custom text</h4>
+          <v-checkbox v-model="isCSV" :label="`CSV`"></v-checkbox>
           <v-file-input
+            v-if="isCSV"
             id="csv"
             show-size
             label="Select CSV file"
           ></v-file-input>
+          <v-text-field
+            v-else
+            v-model="normalText"
+            label="Your text here..."
+            @keyup.enter="replaceNormalText"
+          ></v-text-field>
           <div v-for="(regexString, index) in regexStrings" :key="index">
             <h3>Rule {{ index + 1 }}</h3>
             <v-text-field
@@ -40,6 +48,7 @@
               >Replace Text</v-btn
             >
             <v-btn
+              v-show="isCSV"
               class="mt-2"
               :disabled="replacedText == ''"
               @click="downloadCSV"
@@ -50,7 +59,8 @@
         </div>
       </v-col>
       <v-col cols="6"
-        ><p>{{ replacedText }}</p></v-col
+        ><h4>Result</h4>
+        <p>{{ replacedText }}</p></v-col
       >
     </v-row>
     <v-row>
@@ -73,7 +83,9 @@ export default {
       { regex: `-`, replace: " " },
     ],
     canReplaceText: false,
+    normalText: "",
     replacedText: "",
+    isCSV: true,
   }),
   methods: {
     addRule() {
@@ -83,26 +95,37 @@ export default {
       });
     },
     replaceText() {
+      if (this.isCSV) {
+        this.replaceCSVFile();
+      } else {
+        this.replaceNormalText();
+      }
+    },
+    replaceNormalText() {
+      this.executeRegex(this.normalText);
+    },
+    replaceCSVFile() {
       let fileInput = document.getElementById("csv");
       let reader = new FileReader();
+      reader.readAsBinaryString(fileInput.files[0]);
 
       reader.onload = () => {
-        let regexs = [];
-        this.regexStrings.forEach((regexString) => {
-          regexs.push(new RegExp(regexString.regex, "gim"));
-
-          this.replacedText = reader.result;
-
-          regexs.forEach((regex, index) => {
-            this.replacedText = this.replacedText.replace(
-              regex,
-              this.regexStrings[index].replace
-            );
-          });
-        });
+        this.executeRegex(reader.result);
       };
+    },
+    executeRegex(textToBeReplaced) {
+      this.replacedText = textToBeReplaced;
+      let regexs = [];
+      this.regexStrings.forEach((regexString) => {
+        regexs.push(new RegExp(regexString.regex, "gim"));
+      });
 
-      reader.readAsBinaryString(fileInput.files[0]);
+      regexs.forEach((regex, index) => {
+        this.replacedText = this.replacedText.replace(
+          regex,
+          this.regexStrings[index].replace
+        );
+      });
     },
     download(filename, text) {
       let element = document.createElement("a");
